@@ -8,10 +8,13 @@ key: mykeyq
 
 ###
 PRODUCER keyed-message
-topic: test2
+topic: user_creation
 key: mykeyq
 {
-    "hello":"112"
+    "id":1,
+   "username":"pivaros",
+   "phone":"0505707545",
+   "likes":0
 }
 
 

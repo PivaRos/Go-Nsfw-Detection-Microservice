@@ -18,6 +18,7 @@ func ConfigureProducer() func(message *sarama.ProducerMessage) {
 		log.Fatalf("Failed to start Kafka producer: %v", err)
 	}
 	defer producer.AsyncClose()
+	log.Println("Finish configuring Kafka Producer")
 	return func(message *sarama.ProducerMessage) {
 		producer.Input() <- message
 	}

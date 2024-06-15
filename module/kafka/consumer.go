@@ -2,13 +2,14 @@ package kafka
 
 import (
 	"log"
+	"sync"
 
 	"github.com/IBM/sarama"
+	"github.com/pivaros/go-image-recognition/kafka/handlers"
 )
 
 func ConfigureConsumer() {
 	log.Println("Configuring Kafka Consumer...")
-
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 
@@ -19,21 +20,39 @@ func ConfigureConsumer() {
 	}
 	defer consumer.Close()
 
+	// List of topics to consume
+	topics := []string{"user_creation", "user_update"}
+
+	// WaitGroup to wait for all consumers to finish
+	var wg sync.WaitGroup
+
+	// Start a consumer for each topic
+	for _, topic := range topics {
+		wg.Add(1)
+		go consumeTopic(consumer, topic, &wg)
+	}
+
+	log.Println("Finish configuring Kafka Consumer")
+	// Wait for all consumers to finish
+	wg.Wait()
+}
+
+func consumeTopic(consumer sarama.Consumer, topic string, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	// Consume messages from the Kafka topic
-	topic := "test1"
 	partitionConsumer, err := consumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
 	if err != nil {
-		log.Fatalf("Failed to start Kafka partition consumer: %v", err)
+		log.Fatalf("Failed to start Kafka partition consumer for topic %s: %v", topic, err)
 	}
 	defer partitionConsumer.Close()
 
 	for {
 		select {
 		case msg := <-partitionConsumer.Messages():
-			log.Printf("Consumed message: %s\n", string(msg.Value))
+			handlers.HandleEvent(topic, msg.Value)
 		case err := <-partitionConsumer.Errors():
-			log.Printf("Failed to consume message: %v\n", err)
+			log.Printf("Failed to consume message from %s: %v\n", topic, err)
 		}
 	}
-
 }

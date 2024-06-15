@@ -16,11 +16,9 @@ func Run(appState *utils.AppState, wg *sync.WaitGroup) {
 	}()
 	//configure kafka producer
 	appState.ProduceMessage = ConfigureProducer()
-	log.Println("Finish configuring Kafka Producer")
 	//resume api
 	wg.Done()
 	//configure kafka consumer
 	ConfigureConsumer()
-	log.Println("Finish configuring Kafka Consumer")
 
 }
