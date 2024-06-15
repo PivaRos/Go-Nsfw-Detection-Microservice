@@ -1,35 +1,7 @@
 PRODUCER keyed-message
-topic: anishmahapatra
+topic: test1
 key: mykeyq
 headers: header1=value1, header2=value2
 record content
 
 ###
-
-PRODUCER non-keyed-json-message
-topic: test11
-{
-    "type": "my_test_event",
-    "message":"asdasd"
-}
-###
-
-PRODUCER non-keyed-json-message
-topic: test11
-{
-    "type": "my_test_event",
-    "message":"asdasd"
-}
-###
-PRODUCER non-keyed-json-message
-topic: images
-{
-    "type": "my_test_event",
-    "message":"asdasd"
-}
-###
-PRODUCER keyed-message
-topic: images
-key: mykeyq
-headers: header1=value1, header2=value2
-record content
