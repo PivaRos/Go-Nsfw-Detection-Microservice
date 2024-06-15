@@ -11,8 +11,9 @@ import (
 )
 
 type Env struct {
-	Jwt_Secret_Key []byte
-	PORT           string
+	Jwt_Secret_Key    []byte
+	PORT              string
+	Connection_String string
 }
 
 func InitEnv() (*Env, error) {
@@ -41,5 +42,11 @@ func InitEnv() (*Env, error) {
 	if e.PORT == "" {
 		return nil, errors.New("no PORT was found in env file")
 	}
+
+	e.Connection_String = os.Getenv("CONNECTION_STRING")
+	if e.Connection_String == "" {
+		return nil, errors.New("no CONNECTION_STRING was found in env file")
+	}
+
 	return &e, nil
 }

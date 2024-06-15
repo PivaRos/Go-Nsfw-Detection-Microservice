@@ -8,22 +8,19 @@ import (
 	"github.com/pivaros/go-image-recognition/utils"
 )
 
-func Run() error {
+func Run(appState *utils.AppState) error {
 	//init the env variables
-	env, err := utils.InitEnv()
-	if err != nil {
-		return err
-	}
 	Stack := middleware.CreateStack()
 	mainRouter := http.NewServeMux()
 	//create server instance
+	loadRoutes(mainRouter, appState)
 	app := http.Server{
-		Addr:    ":" + env.PORT,
+		Addr:    ":" + appState.Env.PORT,
 		Handler: Stack(mainRouter),
 	}
 	//start listening for traffic
-	log.Println("starting server on port " + env.PORT)
-	err = app.ListenAndServe()
+	log.Println("Starting Api on port " + appState.Env.PORT)
+	err := app.ListenAndServe()
 	if err != nil {
 		return err
 	}
