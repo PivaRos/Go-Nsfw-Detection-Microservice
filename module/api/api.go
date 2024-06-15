@@ -19,7 +19,7 @@ func Run(appState *utils.AppState) error {
 		Handler: Stack(mainRouter),
 	}
 	//start listening for traffic
-	log.Println("Starting Api on port " + appState.Env.PORT)
+	log.Println("Started Api on port " + appState.Env.PORT)
 	err := app.ListenAndServe()
 	if err != nil {
 		return err

@@ -1,7 +1,18 @@
 PRODUCER keyed-message
 topic: test1
 key: mykeyq
-headers: header1=value1, header2=value2
-record content
+{
+    "hello":"112"
+}
+
+
+###
+PRODUCER keyed-message
+topic: test2
+key: mykeyq
+{
+    "hello":"112"
+}
+
 
 ###

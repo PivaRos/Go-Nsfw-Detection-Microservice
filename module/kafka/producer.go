@@ -8,6 +8,7 @@ import (
 
 func ConfigureProducer() func(message *sarama.ProducerMessage) {
 	// Configure the Kafka producer
+	log.Println("Configuring Kafka Producer...")
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
 
