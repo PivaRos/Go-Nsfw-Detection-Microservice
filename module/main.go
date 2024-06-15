@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"sync"
 
 	_ "github.com/lib/pq"
 	"github.com/pivaros/go-image-recognition/api"
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+	var wg sync.WaitGroup
 	// the highest panic catch
 	defer func() {
 		if r := recover(); r != nil {
@@ -35,7 +37,9 @@ func main() {
 		Db:  db,
 	}
 	//run the applications and pass the postgres connection
-	go kafka.Run(AppState)
+	wg.Add(1)
+	go kafka.Run(AppState, &wg)
+	wg.Wait()
 	err = api.Run(AppState)
 	if err != nil {
 		log.Panicln(err)
