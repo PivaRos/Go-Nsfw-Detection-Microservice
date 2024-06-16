@@ -9,6 +9,6 @@ func HandleEvent(topic string, message []byte) {
 	case "user_update":
 		HandleUserUpdate(message)
 	default:
-		log.Printf("Received message from unknown topic %s: %s\n", topic, string(message))
+		log.Printf("Received message from unhandled topic %s: %s\n", topic, string(message))
 	}
 }

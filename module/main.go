@@ -15,9 +15,9 @@ func main() {
 	// the highest panic catch
 	defer func() {
 		if r := recover(); r != nil {
-			log.Println("api: top level panic:", r)
+			log.Println("main thread: top level panic:", r)
 		} else {
-			log.Println("api: couldn't recover panic in top level")
+			log.Println("main thread: couldn't recover panic in top level")
 		}
 	}()
 	//setup env

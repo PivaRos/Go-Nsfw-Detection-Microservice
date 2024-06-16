@@ -1,3 +1,9 @@
 package handlers
 
-func HandleUserUpdate(message []byte) {}
+import (
+	"log"
+)
+
+func HandleUserUpdate(message []byte) {
+	log.Println("HandleUserUpdate", string(message))
+}
