@@ -1,4 +1,13 @@
-# Go-Microservice
+# Go-Nsfw-Detection-Microservice
+
+#### A microservice built with Go and kafka for detecting NSFW content, including nudity and blood, in images. The service uses the nudenet library for detection and returns results with confidence scores ranging from 0 to 1.
+
+## Features
+
+- Detects nudity and blood in images.
+- Returns confidence scores (0 to 1) for detected content.
+- Integrates with Python for image processing and detection.
+- Handles base64-encoded image inputs.
 
 ## Development
 
