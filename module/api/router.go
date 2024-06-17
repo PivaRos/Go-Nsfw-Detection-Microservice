@@ -8,10 +8,8 @@ import (
 
 func loadRoutes(router *http.ServeMux, AppState *utils.AppState) {
 
-	// //auth
-	// routes.RegisterAuthRoutes(router, AppState)
-	// //admin
-	// routes.RegisterAdminRoutes(router, AppState)
-	// //appointment
-	// routes.RegisterAppointmentRoutes(router, AppState)
+	router.HandleFunc("GET /as", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		return
+	})
 }

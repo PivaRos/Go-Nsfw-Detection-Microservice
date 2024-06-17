@@ -1,0 +1,11 @@
+
+PRODUCER keyed-message
+topic: user_creation
+key: image_upload
+{
+    "imageGuid":"",
+    "base64":"as"
+}
+
+
+###

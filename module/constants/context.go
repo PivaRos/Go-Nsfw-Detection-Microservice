@@ -3,5 +3,7 @@ package constants
 type ContextKey string
 
 const (
-	UserDataContextKey ContextKey = "user_data_context_key"
+	UserIdContextKey    ContextKey = "user_id_context_key"
+	UserGovIdContextKey ContextKey = "user_gov_id_context_key"
+	UserRoleContextKey  ContextKey = "user_role_context_key"
 )
