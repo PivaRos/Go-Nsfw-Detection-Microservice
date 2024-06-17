@@ -16,7 +16,8 @@ func Run(appState *utils.AppState, wg *sync.WaitGroup) {
 		}
 	}()
 	//configure kafka producer
-	producer, err := ConfigureProducer()
+	producer, closeChannelProducer, err := ConfigureProducer()
+	defer closeChannelProducer()
 	if err != nil {
 		panic(err)
 	}

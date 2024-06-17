@@ -4,9 +4,16 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/IBM/sarama"
+	"github.com/pivaros/go-image-recognition/kafka/nsfw"
 	"github.com/pivaros/go-image-recognition/structs"
 	"github.com/pivaros/go-image-recognition/utils"
 )
+
+type CompositeStruct struct {
+	ImageGuid            string                  `json:"imageGuid"`
+	ClassificationResult *[]nsfw.DetectionResult `json:"classificationResult"`
+}
 
 func HandleImageUpload(messageRaw []byte, appState *utils.AppState) {
 	//panic handler
@@ -31,9 +38,11 @@ func HandleImageUpload(messageRaw []byte, appState *utils.AppState) {
 	if err != nil {
 		panic(err)
 	}
-	err = appState.Db.Ping()
+	kafkaMessageRaw, err := json.Marshal(CompositeStruct{
+		ImageGuid:            message.ImageGuid,
+		ClassificationResult: results,
+	})
 	if err != nil {
-		log.Println("err")
 		panic(err)
 	}
 	query := `INSERT INTO image_classifications (image_guid, classification_result) VALUES ($1, $2)`
@@ -41,5 +50,11 @@ func HandleImageUpload(messageRaw []byte, appState *utils.AppState) {
 	if err != nil {
 		panic(err)
 	}
+	producedMessage := &sarama.ProducerMessage{
+		Topic: "image_classified",
+		Value: sarama.ByteEncoder(kafkaMessageRaw),
+	}
+
+	appState.ProduceMessage(producedMessage)
 
 }
