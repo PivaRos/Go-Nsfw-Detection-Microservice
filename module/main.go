@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+	defer db.Close()
 	log.Println("Successfully connected to PostgreSQL")
 	var AppState = &utils.AppState{
 		Env: env,

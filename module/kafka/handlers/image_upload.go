@@ -12,7 +12,7 @@ func HandleImageUpload(messageRaw []byte, appState *utils.AppState) {
 	//panic handler
 	defer func() {
 		if r := recover(); r != nil {
-			log.Println("kafka thread: top level panic:", r)
+			log.Println("kafka thread: panic recovery HandleImageUpload", r)
 		}
 	}()
 	//put this message (image) through the image classification model
@@ -27,6 +27,19 @@ func HandleImageUpload(messageRaw []byte, appState *utils.AppState) {
 		panic(err)
 	}
 
-	log.Println(*results)
+	classificationResultsJSON, err := json.Marshal(results)
+	if err != nil {
+		panic(err)
+	}
+	err = appState.Db.Ping()
+	if err != nil {
+		log.Println("err")
+		panic(err)
+	}
+	query := `INSERT INTO image_classifications (image_guid, classification_result) VALUES ($1, $2)`
+	_, err = appState.Db.Exec(query, message.ImageGuid, classificationResultsJSON)
+	if err != nil {
+		panic(err)
+	}
 
 }
