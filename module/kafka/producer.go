@@ -6,7 +6,7 @@ import (
 	"github.com/IBM/sarama"
 )
 
-func ConfigureProducer() func(message *sarama.ProducerMessage) {
+func ConfigureProducer() (func(message *sarama.ProducerMessage), error) {
 	// Configure the Kafka producer
 	log.Println("Configuring Kafka Producer...")
 	config := sarama.NewConfig()
@@ -15,11 +15,11 @@ func ConfigureProducer() func(message *sarama.ProducerMessage) {
 	// Create a new Kafka producer
 	producer, err := sarama.NewAsyncProducer([]string{"localhost:9092"}, config)
 	if err != nil {
-		log.Fatalf("Failed to start Kafka producer: %v", err)
+		return nil, err
 	}
 	defer producer.AsyncClose()
 	log.Println("Finish configuring Kafka Producer")
 	return func(message *sarama.ProducerMessage) {
 		producer.Input() <- message
-	}
+	}, nil
 }

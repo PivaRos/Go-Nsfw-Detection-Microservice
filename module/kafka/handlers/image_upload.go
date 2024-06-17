@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"log"
+	"github.com/pivaros/go-image-recognition/utils"
 )
 
-func HandleImageUpload(message []byte) {
-	log.Println("image_upload", string(message))
+func HandleImageUpload(message []byte, appState *utils.AppState) {
+	//put this message (image) through the image classification model
+	//and then update the db
 }

@@ -6,9 +6,10 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/pivaros/go-image-recognition/kafka/handlers"
+	"github.com/pivaros/go-image-recognition/utils"
 )
 
-func ConfigureConsumer() {
+func ConfigureConsumer(appState *utils.AppState) {
 	log.Println("Configuring Kafka Consumer...")
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
@@ -29,7 +30,7 @@ func ConfigureConsumer() {
 	// Start a consumer for each topic
 	for _, topic := range topics {
 		wg.Add(1)
-		go consumeTopic(consumer, topic, &wg)
+		go consumeTopic(consumer, topic, &wg, appState)
 	}
 
 	log.Println("Finish configuring Kafka Consumer")
@@ -37,7 +38,7 @@ func ConfigureConsumer() {
 	wg.Wait()
 }
 
-func consumeTopic(consumer sarama.Consumer, topic string, wg *sync.WaitGroup) {
+func consumeTopic(consumer sarama.Consumer, topic string, wg *sync.WaitGroup, appState *utils.AppState) {
 	defer wg.Done()
 
 	// Consume messages from the Kafka topic
@@ -50,7 +51,7 @@ func consumeTopic(consumer sarama.Consumer, topic string, wg *sync.WaitGroup) {
 	for {
 		select {
 		case msg := <-partitionConsumer.Messages():
-			handlers.HandleEvent(topic, msg.Value)
+			handlers.HandleEvent(topic, msg.Value, appState)
 		case err := <-partitionConsumer.Errors():
 			log.Printf("Failed to consume message from %s: %v\n", topic, err)
 		}

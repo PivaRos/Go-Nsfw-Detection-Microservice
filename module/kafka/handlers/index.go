@@ -1,11 +1,16 @@
 package handlers
 
-import "log"
+import (
+	"log"
 
-func HandleEvent(topic string, message []byte) {
+	"github.com/pivaros/go-image-recognition/constants"
+	"github.com/pivaros/go-image-recognition/utils"
+)
+
+func HandleEvent(topic string, message []byte, appState *utils.AppState) {
 	switch topic {
-	case "image_upload":
-		HandleImageUpload(message)
+	case string(constants.ImageUpload):
+		HandleImageUpload(message, appState)
 	default:
 		log.Printf("Received message from unhandled topic %s: %s\n", topic, string(message))
 	}

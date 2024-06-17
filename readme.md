@@ -1,4 +1,4 @@
-# Go-Image-Recognition
+# Go-Microservice
 
 ## Development
 
