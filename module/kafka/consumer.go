@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/IBM/sarama"
+	"github.com/pivaros/go-image-recognition/constants"
 	"github.com/pivaros/go-image-recognition/kafka/handlers"
 	"github.com/pivaros/go-image-recognition/utils"
 )
@@ -22,7 +23,7 @@ func ConfigureConsumer(appState *utils.AppState) {
 	defer consumer.Close()
 
 	// List of topics to consume
-	topics := []string{"user_creation", "user_update"}
+	topics := constants.Topics
 
 	// WaitGroup to wait for all consumers to finish
 	var wg sync.WaitGroup

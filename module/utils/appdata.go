@@ -11,5 +11,5 @@ type AppState struct {
 	Env                *Env
 	Db                 *sql.DB
 	ProduceMessage     func(message *sarama.ProducerMessage)
-	ClassificationFunc func(string) (nsfw.Result, error)
+	ClassificationFunc func(string) (*[]nsfw.DetectionResult, error)
 }

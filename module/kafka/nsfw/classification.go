@@ -1,39 +1,46 @@
 package nsfw
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os/exec"
 )
 
-type Result struct {
-	Unsafe float64 `json:"unsafe"`
+type DetectionResult struct {
+	Class string  `json:"class"`
+	Score float64 `json:"score"`
+	Box   []int   `json:"box"`
 }
 
-func ConfigureModel() (func(string) (Result, error), error) {
-	classifyFunc := func(imageBase64 string) (Result, error) {
-		// Run the Python script
-		cmd := exec.Command("python3", "nudenet.py", imageBase64)
-		output, err := cmd.Output()
+// ConfigureModel returns a function that takes a base64-encoded string
+// and returns the classification result.
+func ConfigureModel() (func(string) (*[]DetectionResult, error), error) {
+	classifyFunc := func(imageBase64 string) (*[]DetectionResult, error) {
+		// Use the absolute path to the renamed Python script
+		scriptPath := "./kafka/nsfw/classify_nsfw.py"
+
+		// Run the Python script using the global Python installation
+		cmd := exec.Command("python3", scriptPath, imageBase64)
+
+		var outb, errb bytes.Buffer
+		cmd.Stdout = &outb
+		cmd.Stderr = &errb
+
+		err := cmd.Run()
 		if err != nil {
-			return Result{}, fmt.Errorf("Error running Python script: %v", err)
+			return nil, fmt.Errorf("Error running Python script: %v, stderr: %s", err, errb.String())
 		}
 
 		// Parse the JSON result
-		var classificationResult map[string]Result
-		err = json.Unmarshal(output, &classificationResult)
+		var classificationResults []DetectionResult
+		err = json.Unmarshal(outb.Bytes(), &classificationResults)
 		if err != nil {
-			return Result{}, fmt.Errorf("Error unmarshaling JSON: %v", err)
+			return nil, fmt.Errorf("Error unmarshaling JSON: %v", err)
 		}
 
-		// Assuming there's only one result in the map and returning the first one
-		for _, res := range classificationResult {
-			return res, nil
-		}
-
-		return Result{}, fmt.Errorf("No result found")
+		return &classificationResults, nil
 	}
-	log.Println("Finish configuring NSFW model")
+
 	return classifyFunc, nil
 }
