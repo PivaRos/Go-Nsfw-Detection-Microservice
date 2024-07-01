@@ -25,7 +25,6 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
-
 	//setup postgres db
 	db, err := utils.ConnectPostgres(env.Connection_String)
 	if err != nil {
